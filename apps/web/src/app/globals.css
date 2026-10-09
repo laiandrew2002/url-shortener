@@ -1,1 +1,9 @@
 @import "tailwindcss";
+
+body {
+  @apply min-h-screen bg-[#eef1f7] text-slate-900 antialiased;
+}
+
+:focus-visible {
+  @apply outline-2 outline-offset-2 outline-blue-600;
+}
