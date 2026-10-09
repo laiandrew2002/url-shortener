@@ -6,7 +6,7 @@ This repository is a npm workspaces monorepo with a Next.js frontend (`apps/web`
 
 ## Prerequisites
 
-- Node.js 20.19 or later (for host-based development and tests)
+- Node.js 22.12 or later (for host-based development and tests)
 - npm 10 or later
 - Docker and Docker Compose
 
@@ -58,10 +58,23 @@ npm run test:integration
 
 Unit tests do not need the database. Integration tests use a separate `url_shortener_test` database on local Postgres.
 
+## CI
+
+GitHub Actions runs on every push and pull request:
+
+1. `npm ci`
+2. lint
+3. typecheck
+4. frontend and API unit tests
+5. API integration tests against a PostgreSQL service
+6. production builds
+
+The lockfile and Prisma migrations are committed. `.env` files are not.
+
 ## Environment variables
 
 See `.env.example`. Do not point `DATABASE_URL` at `localhost` inside the API container; Compose sets `postgresql://postgres:postgres@db:5432/url_shortener`.
 
 ## Current status
 
-Phases 1–5 are in place. CI and deployment will be added next.
+Phases 1–6 are in place. Deployment will be added next.
