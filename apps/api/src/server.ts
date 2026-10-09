@@ -1,5 +1,6 @@
 import "./lib/load-env.js";
 import { createApp } from "./app.js";
+import { prisma } from "./lib/prisma.js";
 
 const port = Number(process.env.PORT) || 4000;
 const host = "0.0.0.0";
@@ -13,12 +14,14 @@ const server = app.listen(port, host, () => {
 function shutdown(signal: string) {
   console.log(`Received ${signal}, shutting down`);
   server.close((error) => {
-    if (error) {
-      console.error("Error during shutdown", error);
-      process.exit(1);
-    }
+    void prisma.$disconnect().finally(() => {
+      if (error) {
+        console.error("Error during shutdown", error);
+        process.exit(1);
+      }
 
-    process.exit(0);
+      process.exit(0);
+    });
   });
 }
 

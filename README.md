@@ -2,7 +2,7 @@
 
 A Bitly-style URL shortener for a full-stack take-home assignment.
 
-This repository is a npm workspaces monorepo with a Next.js frontend (`apps/web`) and an Express API (`apps/api`). Shortening logic, full Docker Compose, CI, and deployment will be added in later phases.
+This repository is a npm workspaces monorepo with a Next.js frontend (`apps/web`) and an Express API (`apps/api`). The frontend UI, full Docker Compose, CI, and deployment will be added in later phases.
 
 ## Prerequisites
 
@@ -32,6 +32,14 @@ npm run dev:web
 ```bash
 npm run lint
 npm run typecheck
+npm test
+```
+
+Unit tests do not need the database. Integration tests use a separate `url_shortener_test` database (created automatically) on the same local Postgres instance:
+
+```bash
+npm run test:unit
+npm run test:integration
 ```
 
 ## Database
@@ -48,4 +56,4 @@ docker compose down -v      # stop containers and delete local database data
 
 ## Current status
 
-Phases 1–2 are in place: application skeletons, Prisma 7, the `Url` model, and the initial migration. Remaining phases are not implemented yet.
+Phases 1–3 are in place: application skeletons, Prisma 7, URL shortening, redirects, and backend tests. Remaining phases are not implemented yet.
