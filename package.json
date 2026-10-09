@@ -10,7 +10,11 @@
     "dev:api": "npm run dev -w api",
     "lint": "npm run lint --workspaces --if-present",
     "typecheck": "npm run typecheck --workspaces --if-present",
-    "build": "npm run build --workspaces --if-present"
+    "build": "npm run build --workspaces --if-present",
+    "db:migrate": "npm run db:migrate -w api",
+    "db:deploy": "npm run db:deploy -w api",
+    "db:up": "docker compose up -d db",
+    "db:down": "docker compose down"
   },
   "engines": {
     "node": ">=20.19.0"
