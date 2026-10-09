@@ -5,7 +5,7 @@ import type { NextConfig } from "next";
 const projectRoot = path.join(path.dirname(fileURLToPath(import.meta.url)), "../..");
 
 const nextConfig: NextConfig = {
-  output: "standalone",
+  ...(process.env.VERCEL ? {} : { output: "standalone" as const }),
   outputFileTracingRoot: projectRoot,
   turbopack: {
     rules: {

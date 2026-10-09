@@ -7,7 +7,7 @@ import { createUrlsRouter } from "./routes/urls.js";
 
 export function createApp() {
   const app = express();
-  const frontendUrl = process.env.FRONTEND_URL?.trim();
+  const frontendUrl = process.env.FRONTEND_URL?.trim().replace(/\/$/, "");
 
   app.disable("x-powered-by");
 
