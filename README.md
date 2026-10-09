@@ -2,26 +2,43 @@
 
 A Bitly-style URL shortener for a full-stack take-home assignment.
 
-This repository is a npm workspaces monorepo with a Next.js frontend (`apps/web`) and an Express API (`apps/api`). Full Docker Compose, CI, and deployment will be added in later phases.
+This repository is a npm workspaces monorepo with a Next.js frontend (`apps/web`), an Express API (`apps/api`), and PostgreSQL.
 
 ## Prerequisites
 
-- Node.js 20.19 or later
+- Node.js 20.19 or later (for host-based development and tests)
 - npm 10 or later
-- Docker (for local PostgreSQL)
+- Docker and Docker Compose
 
-## Local development
+## Run with Docker
+
+```bash
+cp .env.example .env
+docker compose up --build
+```
+
+Then open [http://localhost:3000](http://localhost:3000).
+
+Inside Compose, the API reaches PostgreSQL at hostname `db`. The browser still calls the API at `http://localhost:4000`.
+
+```bash
+docker compose down         # stop containers, keep database data
+docker compose down -v      # stop containers and delete the local database volume
+```
+
+Apply migrations explicitly (also runs automatically when the API container starts):
+
+```bash
+docker compose run --rm api npx prisma migrate deploy
+```
+
+## Host-based development
 
 ```bash
 npm install
 cp .env.example .env
 docker compose up -d db
 npm run db:migrate
-```
-
-Run the apps in separate terminals:
-
-```bash
 npm run dev:api
 npm run dev:web
 ```
@@ -29,31 +46,22 @@ npm run dev:web
 - Frontend: [http://localhost:3000](http://localhost:3000)
 - API health: [http://localhost:4000/health](http://localhost:4000/health)
 
+## Tests
+
 ```bash
 npm run lint
 npm run typecheck
 npm test
-```
-
-Unit tests do not need the database. Integration tests use a separate `url_shortener_test` database (created automatically) on the same local Postgres instance:
-
-```bash
 npm run test:unit
 npm run test:integration
 ```
 
-## Database
+Unit tests do not need the database. Integration tests use a separate `url_shortener_test` database on local Postgres.
 
-Local PostgreSQL runs in Docker and stores data in the `url_shortener_pgdata` volume. Stopping containers does not delete that volume.
+## Environment variables
 
-```bash
-docker compose up -d db
-npm run db:migrate          # prisma migrate dev (development)
-npm run db:deploy           # prisma migrate deploy (already-applied / CI-style)
-docker compose down         # stop containers, keep data
-docker compose down -v      # stop containers and delete local database data
-```
+See `.env.example`. Do not point `DATABASE_URL` at `localhost` inside the API container; Compose sets `postgresql://postgres:postgres@db:5432/url_shortener`.
 
 ## Current status
 
-Phases 1–4 are in place: API, database, landing page, and tests. Docker Compose for the full stack, CI, and deployment will be added next.
+Phases 1–5 are in place. CI and deployment will be added next.
