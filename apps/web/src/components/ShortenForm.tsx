@@ -1,6 +1,6 @@
 "use client";
 
-import { useId, useState, type FormEvent } from "react";
+import { useEffect, useId, useRef, useState, type FormEvent } from "react";
 import { createShortUrl, type ShortenedUrl } from "@/lib/api";
 import { validateUrlInput } from "@/lib/validate-url";
 
@@ -12,11 +12,19 @@ export function ShortenForm() {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<ShortenedUrl | null>(null);
   const [copied, setCopied] = useState(false);
+  const [copyCount, setCopyCount] = useState(0);
+  const copiedResetTimeout = useRef<number>(undefined);
+
+  useEffect(() => {
+    return () => window.clearTimeout(copiedResetTimeout.current);
+  }, []);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setError(null);
     setCopied(false);
+    setCopyCount(0);
+    window.clearTimeout(copiedResetTimeout.current);
     setLoading(true);
 
     try {
@@ -42,6 +50,11 @@ export function ShortenForm() {
     try {
       await navigator.clipboard.writeText(result.shortUrl);
       setCopied(true);
+      setCopyCount((count) => count + 1);
+      window.clearTimeout(copiedResetTimeout.current);
+      copiedResetTimeout.current = window.setTimeout(() => {
+        setCopied(false);
+      }, 2000);
     } catch {
       setError("Unable to copy. Please copy the URL manually.");
     }
@@ -150,8 +163,10 @@ export function ShortenForm() {
               </a>
               <button
                 type="button"
-                onClick={handleCopy}
-                aria-label={copied ? "Copied" : "Copy"}
+                onClick={() => {
+                  void handleCopy();
+                }}
+                aria-label="Copy"
                 className="flex size-12 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-600"
               >
                 {copied ? (
@@ -185,7 +200,7 @@ export function ShortenForm() {
               </button>
             </div>
             <p className="sr-only" aria-live="polite">
-              {copied ? "Short URL copied to clipboard." : ""}
+              {copyCount > 0 ? "Short URL copied to clipboard." : ""}
             </p>
           </div>
         </section>

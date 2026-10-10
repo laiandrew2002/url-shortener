@@ -124,7 +124,11 @@ describe("ShortenForm", () => {
     await screen.findByText(shortened.shortUrl);
     await user.click(screen.getByRole("button", { name: "Copy" }));
 
-    expect(await screen.findByRole("button", { name: "Copied" })).toBeInTheDocument();
+    expect(await screen.findByText("Short URL copied to clipboard.")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Copy" })).toBeEnabled();
+
+    await user.click(screen.getByRole("button", { name: "Copy" }));
+    expect(screen.getByRole("button", { name: "Copy" })).toBeEnabled();
     expect(screen.getByText("Short URL copied to clipboard.")).toBeInTheDocument();
   });
 
