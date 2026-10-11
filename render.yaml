@@ -6,7 +6,7 @@ databases:
 
 services:
   - type: web
-    name: url-shortener-api
+    name: url
     runtime: docker
     plan: free
     dockerfilePath: ./apps/api/Dockerfile
